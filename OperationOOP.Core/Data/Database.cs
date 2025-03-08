@@ -1,4 +1,7 @@
 ﻿using OperationOOP.Core.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace OperationOOP.Core.Data
 {
@@ -6,15 +9,18 @@ namespace OperationOOP.Core.Data
     {
         List<Bonsai> Bonsais { get; set; }
 
-        // Ny metod för att filtrera bonsaiträd efter skötselnivå (CareLevel)
+        // 🔹 Metod för att filtrera bonsaiträd efter skötselnivå (CareLevel)
         List<Bonsai> GetBonsaisByCareLevel(CareLevel careLevel);
+
+        // 🔹 Ny metod för att filtrera bonsaiträd som behöver vattnas
+        List<Bonsai> GetBonsaisNeedingWater();
     }
 
     public class Database : IDatabase
     {
         public List<Bonsai> Bonsais { get; set; } = new List<Bonsai>();
 
-        // Implementering av metoden som filtrerar och sorterar bonsaiträd
+        // 🔹 Filtrerar och sorterar bonsaiträd efter skötselnivå
         public List<Bonsai> GetBonsaisByCareLevel(CareLevel careLevel)
         {
             return Bonsais
@@ -22,5 +28,14 @@ namespace OperationOOP.Core.Data
                 .OrderByDescending(b => b.AgeYears) // Sorterar äldsta först
                 .ToList();
         }
+
+        // 🔹 Ny metod för att hitta bonsaiträd som inte har vattnats på minst 7 dagar
+        public List<Bonsai> GetBonsaisNeedingWater()
+        {
+            return Bonsais
+                .Where(b => (DateTime.UtcNow - b.LastWatered).TotalDays >= 7)
+                .ToList();
+        }
     }
 }
+
