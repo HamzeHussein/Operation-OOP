@@ -13,27 +13,27 @@ namespace OperationOOP.Api
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            // Lägger till tjänster i DI-containern
             ConfigureServices(builder.Services);
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
+            // Konfigurerar middleware och request pipeline
             ConfigureMiddleware(app);
 
-            // Start the application
+            // Startar applikationen
             app.Run();
         }
 
         /// <summary>
-        /// Configures services (Dependency Injection)
+        /// Konfigurerar tjänster (Dependency Injection)
         /// </summary>
         private static void ConfigureServices(IServiceCollection services)
         {
-            // Add authorization services
+            // Lägger till behörighetskontroll
             services.AddAuthorization();
 
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            // Lägger till Swagger för API-dokumentation
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(options =>
             {
@@ -41,37 +41,38 @@ namespace OperationOOP.Api
                 options.InferSecuritySchemes();
             });
 
-            // Add Database as a singleton service
+            // Lägger till en databas som singleton-tjänst
             services.AddSingleton<IDatabase, Database>();
 
-            // Add Controllers (for future expansion if needed)
+            // Lägger till stöd för controllers (om det behövs i framtiden)
             services.AddControllers();
         }
 
         /// <summary>
-        /// Configures middleware and API request pipeline
+        /// Konfigurerar middleware och HTTP-requesthantering
         /// </summary>
         private static void ConfigureMiddleware(WebApplication app)
         {
-            // Enable Swagger in Development mode
+            // Aktiverar Swagger i utvecklingsläge
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
 
-            // Force HTTPS for security
+            // Tvingar användning av HTTPS för säkerhet
             app.UseHttpsRedirection();
 
-            // Enable Authorization
+            // Aktiverar behörighetskontroll
             app.UseAuthorization();
 
-            // Map API endpoints
+            // Mappar API-endpoints
             app.MapEndpoints<Program>();
 
-            // If using Controllers, enable them
+            // Aktiverar controllers om de används
             app.MapControllers();
         }
     }
 }
+
 
